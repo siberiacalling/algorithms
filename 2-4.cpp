@@ -10,6 +10,7 @@
  *  ближайшего по значению к B[i]. Время работы поиска для каждого элемента B[i]: O(log(k)).
  *  n ≤ 110000, m ≤ 1000.
  */
+
 std::vector<int> read_array() {
     std::vector<int> my_array;
     int elements_amount;
@@ -22,18 +23,24 @@ std::vector<int> read_array() {
     return my_array;
 }
 
-//int get_borders(int target, const std::vector<int> &A) {
-//    int max_power = 1;
-//    while (A[max_power] < target) {
-//        max_power *=2;
-//    }
-//    return max_power;
-//}
-int binary_search_index(int target, const std::vector<int> &A) {
-    int vector_size = static_cast<int>(A.size()) - 1;
-    int left = 0;
-    int right = vector_size;
+void get_borders(int target, const std::vector<int> &A, int *left, int *right) {
+    int max_index = static_cast<int>(A.size()) - 1;
+    int max_power = 1;
+    while ((A[max_power] < target) && (max_power < max_index)) {
+        max_power *= 2;
+    }
+    if (max_power > max_index) {
+        *right = max_index;
+    } else {
+        *right = max_power;
+    }
+    *left = max_power / 2;
+}
 
+int binary_search_index(int target, const std::vector<int> &A) {
+    int left = 0;
+    int right = static_cast<int>(A.size()) - 1;
+    get_borders(target, A, &left, &right);
     int index = -1;
     int distance = std::numeric_limits<int>::max();
     while (left <= right) {
