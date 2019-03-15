@@ -105,7 +105,7 @@ T Deque<T>::popBack() {
         front = -1;
         back = -1;
     }
-        // back points to the first element
+    // back points to the first element
     else if (back == 0) {
         back = buffer_size - 1;
     } else {
