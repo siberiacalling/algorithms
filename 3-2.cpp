@@ -52,7 +52,7 @@ private:
 
 template<class T>
 Deque<T>::Deque() {
-    buffer_size = 3;
+    buffer_size = 4;
     elements.resize(static_cast<unsigned long>(buffer_size));
     front = -1;
     back = -1;
@@ -117,9 +117,7 @@ T Deque<T>::popFront() {
 template<class T>
 void Deque<T>::pushBack(const T item) {
     int next_back = 0;
-    bool first_push = false;
     if (back == -1) {
-        first_push = true;
         next_back = 0;
         front = 0;
     } else if (back == buffer_size - 1) {
@@ -127,7 +125,7 @@ void Deque<T>::pushBack(const T item) {
     } else {
         next_back = back + 1;
     }
-    if (next_back == front && !first_push) {
+    if (elements_amount == buffer_size) {
         std::vector<T> new_elements;
         buffer_size *= 2;
         new_elements.resize(static_cast<unsigned long>(buffer_size));
@@ -149,9 +147,7 @@ void Deque<T>::pushBack(const T item) {
 template<class T>
 void Deque<T>::pushFront(const T item) {
     int next_front = 0;
-    bool first_push = false;
     if (front == -1) {
-        first_push = true;
         next_front = 0;
         back = 0;
     } else if (front == 0) {
@@ -160,8 +156,9 @@ void Deque<T>::pushFront(const T item) {
         next_front = front - 1;
     }
 
-    if (next_front == back && !first_push) {
+    if (elements_amount == buffer_size) {
         std::vector<T> new_elements;
+        buffer_size *= 2;
         new_elements.resize(static_cast<unsigned long>(buffer_size));
         for (int i = 0; i < elements_amount; i++) {
             new_elements[i] = elements[front];
