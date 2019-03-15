@@ -1,10 +1,12 @@
-using namespace std;
-
 #include <vector>
 #include <assert.h>
 #include "iostream"
 
+using namespace std;
+
 /*
+ * Смирнова Анита АПО-12
+ * Contest ID 19629674
  * Реализовать дек с динамическим зацикленным буфером.
  * Обрабатывать команды push * и pop *.
  * В первой строке количество команд n. n ≤ 1000000.
@@ -24,10 +26,10 @@ public:
 
     ~Deque();
 
-    // adds item to front of Deque, returns True if successful
+    // adds item to front of Deque
     void pushFront(T item);
 
-    // adds item to back of Deque, returns True if successful
+    // adds item to back of Deque
     void pushBack(T item);
 
     // removes item from front of Deque
@@ -37,8 +39,9 @@ public:
     T popBack();
 
     // are there any elements in the Deque
-    // CONST
     bool IsEmpty() const;
+
+    std::vector<T> IncreaseVectorSize();
 
 
 private:
@@ -72,18 +75,38 @@ bool Deque<T>::IsEmpty() const {
 }
 
 template<class T>
+std::vector<T> Deque<T>::IncreaseVectorSize() {
+    std::vector<T> new_elements;
+    buffer_size *= 2;
+    new_elements.resize(static_cast<unsigned long>(buffer_size));
+    for (int i = 0; i < elements_amount; i++) {
+        new_elements[i] = elements[front];
+        front = (front + 1) % elements_amount;
+    }
+    front = 0;
+    back = buffer_size / 2 - 1;
+    return new_elements;
+}
+
+template<class T>
 T Deque<T>::popBack() {
     assert(!IsEmpty());
+    // there are no elements in Deque
     if (elements_amount == 0) {
         front = -1;
         back = -1;
         return -1;
     }
+
     T last_elem = elements[back];
+
+    // pop last element in Deque
     if (elements_amount == 1) {
         front = -1;
         back = -1;
-    } else if (back == 0) {
+    }
+        // back points to the first element
+    else if (back == 0) {
         back = buffer_size - 1;
     } else {
         back = back - 1;
@@ -95,16 +118,23 @@ T Deque<T>::popBack() {
 template<class T>
 T Deque<T>::popFront() {
     assert(!IsEmpty());
+
+    // there are no elements in Deque
     if (elements_amount == 0) {
         front = -1;
         back = -1;
         return -1;
     }
+
     T first_elem = elements[front];
+
+    // pop last element in Deque
     if (elements_amount == 1) {
         front = -1;
         back = -1;
-    } else if (front == buffer_size - 1) {
+    }
+    // front points to the last element
+    else if (front == buffer_size - 1) {
         front = 0;
     } else {
         front = front + 1;
@@ -117,25 +147,22 @@ T Deque<T>::popFront() {
 template<class T>
 void Deque<T>::pushBack(const T item) {
     int next_back = 0;
+
+    // if Deque is empty
     if (back == -1) {
         next_back = 0;
         front = 0;
-    } else if (back == buffer_size - 1) {
+    }
+    // back points to the last element
+    else if (back == buffer_size - 1) {
         next_back = 0;
     } else {
         next_back = back + 1;
     }
+
+    // if Deque is full
     if (elements_amount == buffer_size) {
-        std::vector<T> new_elements;
-        buffer_size *= 2;
-        new_elements.resize(static_cast<unsigned long>(buffer_size));
-        for (int i = 0; i < elements_amount; i++) {
-            new_elements[i] = elements[front];
-            front = (front + 1) % elements_amount;
-        }
-        elements = new_elements;
-        front = 0;
-        back = buffer_size / 2 - 1;
+        elements = IncreaseVectorSize();
         next_back = back + 1;
     }
     back = next_back;
@@ -147,26 +174,23 @@ void Deque<T>::pushBack(const T item) {
 template<class T>
 void Deque<T>::pushFront(const T item) {
     int next_front = 0;
+
+    // if Deque is empty
     if (front == -1) {
         next_front = 0;
         back = 0;
-    } else if (front == 0) {
+    }
+
+    // front points to the first element
+    else if (front == 0) {
         next_front = buffer_size - 1;
     } else {
         next_front = front - 1;
     }
 
+    // if Deque is full
     if (elements_amount == buffer_size) {
-        std::vector<T> new_elements;
-        buffer_size *= 2;
-        new_elements.resize(static_cast<unsigned long>(buffer_size));
-        for (int i = 0; i < elements_amount; i++) {
-            new_elements[i] = elements[front];
-            front = (front + 1) % elements_amount;
-        }
-        elements = new_elements;
-        front = 0;
-        back = buffer_size / 2 - 1;
+        elements = IncreaseVectorSize();
         next_front = buffer_size - 1;
     }
     front = next_front;

@@ -30,11 +30,11 @@ double calulate_area(std::vector<Point> dots) {
 }
 
 int main() {
-    int coordinates_amount;
     std::vector<Point> dots;
+    int coordinates_amount = 0;
     std::cin >> coordinates_amount;
     for (int i = 0; i < coordinates_amount; i++) {
-        int x, y;
+        int x = 0, y = 0;
         std::cin >> x >> y;
         dots.emplace_back(x, y);
     }

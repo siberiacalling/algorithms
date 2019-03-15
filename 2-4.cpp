@@ -4,7 +4,7 @@
 
 /*
  * Смирнова Анита АПО-12
- * Contest ID
+ * Contest ID 19582112
  * Дан отсортированный массив различных целых чисел A[0..n-1] и массив целых чисел B[0..m-1].
  * Для каждого элемента массива B[i] найдите минимальный индекс элемента массива A[k],
  * ближайшего по значению к B[i]. Время работы поиска для каждого элемента B[i]: O(log(k)).
@@ -16,7 +16,7 @@ std::vector<int> read_array() {
     int elements_amount;
     std::cin >> elements_amount;
     for (int i = 0; i < elements_amount; i++) {
-        int tmp;
+        int tmp = 0;
         std::cin >> tmp;
         my_array.push_back(tmp);
     }
