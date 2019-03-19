@@ -39,6 +39,9 @@ std::pair<int, int> get_borders(int target, const std::vector<int> &A) {        
 }
 
 int binary_search_index(int target, const std::vector<int> &A) {                // O(log(n)) time, O(1) memory
+    if (A.size() == 1) {
+        return 0;
+    }
     auto left_right = get_borders(target, A);
     int left = left_right.first;
     int right = left_right.second;
