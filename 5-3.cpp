@@ -25,7 +25,7 @@ public:
 };
 
 template<class T, class Compare = IsLess<T>>
-void merge(T *arr, int left_index, int middle, int right_index, Compare cmp = Compare{}) {
+void merge(T *arr, int left_index, int middle, int right_index, Compare cmp) {
     int elements_amount_left_subarray = middle - left_index + 1;
     int elements_amount_right_subarray = right_index - middle;
     T Left[elements_amount_left_subarray], Right[elements_amount_right_subarray];
@@ -61,15 +61,15 @@ void merge(T *arr, int left_index, int middle, int right_index, Compare cmp = Co
     }
 }
 
-template<class T>
-void mergeSort(T *arr, int left_index, int right_index) {
+template<class T, class Compare = IsLess<T>>
+void mergeSort(T *arr, int left_index, int right_index, Compare cmp = Compare{}) {
     if (left_index < right_index) {
         int middle = left_index + (right_index - left_index) / 2;
 
         mergeSort(arr, left_index, middle);
         mergeSort(arr, middle + 1, right_index);
 
-        merge(arr, left_index, middle, right_index);
+        merge(arr, left_index, middle, right_index, cmp);
     }
 }
 

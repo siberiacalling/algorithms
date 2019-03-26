@@ -39,9 +39,10 @@ public:
     // are there any elements in the Deque
     bool isEmpty() const;
 
-    void increaseArraySize();
 
 private:
+    void increaseArraySize();
+
     int front;
     int back;
     int buffer_size;
