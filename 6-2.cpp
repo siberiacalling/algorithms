@@ -1,12 +1,14 @@
+#include <algorithm>
+#include <iostream>
+
 /*
+ * Смирнова Анита АПО-12
+ * Contest ID 19792899
  * Найти k-ю порядковую статистику
  * Реализуйте стратегию выбора опорного элемента “медиана трёх”.
  * Функцию Partition реализуйте методом прохода двумя итераторами от конца массива к началу.
  */
 
-
-#include <algorithm>
-#include <iostream>
 
 int medianThree(const int *arr, int left, int right) {
     int a = arr[right];
@@ -23,14 +25,6 @@ int medianThree(const int *arr, int left, int right) {
     }
     return (right - left) / 2 + left;
 }
-
-void print_arr(int *arr, int left, int right) {
-    for (int i = left; i < right; i++) {
-        std::cout << arr[i] << " ";
-    }
-    std::cout << '\n';
-}
-
 
 int partition(int *arr, int left, int right) {
     int pivot_index = medianThree(arr, left, right);
@@ -71,7 +65,7 @@ int main() {
     int array_length = 0;
     int k = 0;
     std::cin >> array_length >> k;
-    int *arr = new int[array_length];
+    auto arr = new int[array_length];
     for (int i = 0; i < array_length; i++) {
         std::cin >> arr[i];
     }
