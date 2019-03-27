@@ -1,9 +1,10 @@
 #include <vector>
 #include <iostream>
+#include <cstring>
 
 /*
  * Смирнова Анита АПО-12
- * Contest ID 19640178
+ * Contest ID 19686362
  * Реализовать дек с динамическим зацикленным буфером.
  * Обрабатывать команды push * и pop *.
  * В первой строке количество команд n. n ≤ 1000000.
@@ -21,11 +22,13 @@ class Deque {
 public:
     Deque();
 
+    ~Deque();
+
     // adds item to front of Deque
-    void pushFront(const T& item);
+    void pushFront(const T &item);
 
     // adds item to back of Deque
-    void pushBack(T item);
+    void pushBack(const T &item);
 
     // removes item from front of Deque
     T popFront();
@@ -36,21 +39,29 @@ public:
     // are there any elements in the Deque
     bool isEmpty() const;
 
-    std::vector<T> increaseVectorSize();
 
 private:
+    void increaseArraySize();
+
     int front;
     int back;
     int buffer_size;
     int elements_amount;
-    std::vector<T> elements;
+    T *elements;
 
 };
 
 template<class T>
 Deque<T>::Deque()
         : buffer_size(4), front(-1), back(-1), elements_amount(0) {
-    elements.resize(static_cast<unsigned long>(buffer_size));
+    elements = new T[buffer_size];
+
+}
+
+template<class T>
+Deque<T>::~Deque() {
+    delete[] elements;
+
 }
 
 template<class T>
@@ -59,17 +70,20 @@ bool Deque<T>::isEmpty() const { // O(1) time, O(1) memory
 }
 
 template<class T>
-std::vector<T> Deque<T>::increaseVectorSize() { // O(n) time, O(n) memory
+void Deque<T>::increaseArraySize() { // O(n) time, O(n) memory
+    int new_size = buffer_size * 2;
+    int *new_elements = new int[new_size];
+    memcpy(new_elements, elements, buffer_size * sizeof(T));
     buffer_size *= 2;
-    std::vector<T> new_elements(static_cast<unsigned long>(buffer_size));
     int j = front;
     for (int i = 0; i < elements_amount; i++) {
         new_elements[i] = elements[front];
         front = (front + 1) % elements_amount;
     }
+    delete[] elements;
+    elements = new_elements;
     front = 0;
     back = buffer_size / 2 - 1;
-    return new_elements;
 }
 
 template<class T>
@@ -85,7 +99,7 @@ T Deque<T>::popBack() { // O(1) time, O(1) memory
         front = -1;
         back = -1;
     }
-    // back points to the first element
+        // back points to the first element
     else if (back == 0) {
         back = buffer_size - 1;
     } else {
@@ -109,7 +123,7 @@ T Deque<T>::popFront() { // O(1) time, O(1) memory
         front = -1;
         back = -1;
     }
-    // front points to the last element
+        // front points to the last element
     else if (front == buffer_size - 1) {
         front = 0;
     } else {
@@ -120,7 +134,7 @@ T Deque<T>::popFront() { // O(1) time, O(1) memory
 }
 
 template<class T>
-void Deque<T>::pushBack(const T item) { // O(1) time (amortized), O(1) memory (amortized)
+void Deque<T>::pushBack(const T &item) { // O(1) time (amortized), O(1) memory (amortized)
     int next_back = 0;
 
     // if Deque is empty
@@ -137,7 +151,7 @@ void Deque<T>::pushBack(const T item) { // O(1) time (amortized), O(1) memory (a
 
     // if Deque is full
     if (elements_amount == buffer_size) {
-        elements = increaseVectorSize();
+        increaseArraySize();
         next_back = back + 1;
     }
     back = next_back;
@@ -146,7 +160,7 @@ void Deque<T>::pushBack(const T item) { // O(1) time (amortized), O(1) memory (a
 }
 
 template<class T>
-void Deque<T>::pushFront(const T item) { // O(1) time (amortized), O(1) memory (amortized)
+void Deque<T>::pushFront(const T &item) { // O(1) time (amortized), O(1) memory (amortized)
     int next_front = 0;
 
     // if Deque is empty
@@ -154,7 +168,7 @@ void Deque<T>::pushFront(const T item) { // O(1) time (amortized), O(1) memory (
         next_front = 0;
         back = 0;
     }
-    // front points to the first element
+        // front points to the first element
     else if (front == 0) {
         next_front = buffer_size - 1;
     } else {
@@ -163,7 +177,7 @@ void Deque<T>::pushFront(const T item) { // O(1) time (amortized), O(1) memory (
 
     // if Deque is full
     if (elements_amount == buffer_size) {
-        elements = increaseVectorSize();
+        increaseArraySize();
         next_front = buffer_size - 1;
     }
     front = next_front;
