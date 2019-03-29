@@ -9,6 +9,13 @@
  * Функцию Partition реализуйте методом прохода двумя итераторами от конца массива к началу.
  */
 
+template<class T>
+class CompareDefault {
+public:
+    bool operator()(const T &first, const T &second) const {
+        return first > second;
+    }
+};
 
 int medianThree(const int *arr, int left, int right) {
     int a = arr[right];
@@ -26,14 +33,15 @@ int medianThree(const int *arr, int left, int right) {
     return (right - left) / 2 + left;
 }
 
-int partition(int *arr, int left, int right) {
+template<class T, class Compare = CompareDefault<T>>
+int partition(T *arr, int left, int right, Compare cmp) {
     int pivot_index = medianThree(arr, left, right);
     int pivot = arr[pivot_index];
     std::swap(arr[right], arr[pivot_index]);
     int i = left;
     int j = left;
     while (j != right) {
-        if (arr[j] > pivot) {
+        if (cmp(arr[j], pivot)) {
             j++;
         } else {
             std::swap(arr[i], arr[j]);
@@ -45,11 +53,12 @@ int partition(int *arr, int left, int right) {
     return i;
 }
 
-int findKStat(int *arr, int array_length, int k) {
+template<class T, class Compare = CompareDefault<T>>
+int findKStat(T *arr, int array_length, int k, Compare cmp = Compare{}) {
     int left = 0;
     int right = array_length - 1;
     while (true) {
-        int pivotPos = partition(arr, left, right);
+        int pivotPos = partition(arr, left, right, cmp);
         if (k == pivotPos) {
             return arr[k];
         }

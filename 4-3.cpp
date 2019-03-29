@@ -38,16 +38,16 @@ public:
 
     T pop();
 
-    T top() const;
+    const T& top() const;
 
     bool isEmpty() const;
 
     int size() const;
 
 private:
-    void SiftUp(const int i);
+    void SiftUp(int i);
 
-    void SiftDown(const int index);
+    void SiftDown(int index);
 
     const int buffer_size;
     const Compare cmp;
@@ -99,7 +99,7 @@ T Heap<T, Compare>::pop() {
 }
 
 template<class T, class Compare>
-T Heap<T, Compare>::top() const {
+const T& Heap<T, Compare>::top() const {
     assert(!isEmpty());
     return elements[0];
 }

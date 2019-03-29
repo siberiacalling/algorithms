@@ -9,13 +9,11 @@
  */
 
 std::uint64_t digit(std::uint64_t val, int byte_num) {
-    for (int i = 0; i < byte_num; i++) {
-        val = val >> 8;
-    }
+    val = val >> 8 * byte_num;
     return val & 255;
 }
 
-std::uint64_t *radixLsdSort(std::uint64_t *arr, int array_length) {
+void radixLsdSort(std::uint64_t *arr, int array_length) {
     int *digits_count = new int[256];
     auto result = new std::uint64_t[array_length]();
     for (int i = 0; i < 8; i++) {
@@ -43,7 +41,7 @@ std::uint64_t *radixLsdSort(std::uint64_t *arr, int array_length) {
         }
     }
     delete[] digits_count;
-    return result;
+    delete[] result;
 }
 
 int main() {
@@ -54,11 +52,9 @@ int main() {
         std::cin >> arr[i];
     }
 
-    std::uint64_t *result = radixLsdSort(arr, array_length);
+    radixLsdSort(arr, array_length);
     for (int i = 0; i < array_length; i++) {
-        std::cout << result[i] << " ";
+        std::cout << arr[i] << " ";
     }
     delete[]arr;
-    delete[]result;
-
 }
