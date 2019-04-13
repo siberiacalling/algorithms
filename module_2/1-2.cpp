@@ -1,6 +1,14 @@
+/*
+ * Смирнова Анита АПО-12
+ * Contest ID 20053739
+ * Реализуйте структуру данных типа
+ * “множество строк” на основе динамической хеш-таблицы с открытой адресацией.
+ * Для разрешения коллизий используйте двойное хеширование.
+ */
+
+
 #include<vector>
 #include<string>
-#include<assert.h>
 #include<iostream>
 #include <fstream>
 #include <limits>
@@ -11,9 +19,8 @@ using std::cin;
 using std::cout;
 
 const int DefaultHashTableSize = 2;
-const float MaxAlpha = 0.79;
+const float MaxAlpha = 0.75;
 const int GrowFactor = 2;
-
 
 std::uint32_t hash1(const string &key) {
     std::uint32_t hash = 0;
@@ -80,7 +87,9 @@ void HashTable<T>::growTable() {
     vector<HashTableNode<T>> newTable(table.size() * GrowFactor);
     table = newTable;
     for (int i = 0; i < (int) tableCopy.size(); i++) {
-        Add(tableCopy[i].data);
+        if (tableCopy[i].status == HashTableNode<T>::Status::INSERTED) {
+            Add(tableCopy[i].data);
+        }
     }
 }
 
@@ -89,9 +98,12 @@ bool HashTable<T>::Add(const T &key) {
     std::uint64_t x = hash1(key);
     std::uint64_t y = hash2(key);
 
-
     if (Has(key)) {
         return false;
+    }
+
+    if ((float) keysCount / (float) table.size() >= MaxAlpha) {
+        growTable();
     }
 
     for (int i = 0; i < (int) table.size(); i++) {
@@ -100,9 +112,7 @@ bool HashTable<T>::Add(const T &key) {
         if (table[index].status != HashTableNode<T>::Status::INSERTED) {
             table[index] = HashTableNode<T>(key);
             keysCount++;
-            if ((float)keysCount / (float)table.size() >= MaxAlpha) {
-                growTable();
-            }
+
             return true;
         }
     }
