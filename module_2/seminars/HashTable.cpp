@@ -21,12 +21,12 @@ int Hash(const string &key, int tableSize) {
 
 template<class T>
 struct HashTableNode {
-    T Data;
+    T data;
     HashTableNode<T> *Next;
 
     HashTableNode() : Next(nullptr) {}
 
-    HashTableNode(const T &data, HashTableNode<T> *next) : Data(data), Next(next) {}
+    HashTableNode(const T &data, HashTableNode<T> *next) : data(data), Next(next) {}
 };
 
 template<class T>
@@ -79,7 +79,7 @@ template<class T>
 bool HashTable<T>::has(int hash, const T &key) const {
     HashTableNode<T> *node = table[hash];
     while (node != nullptr) {
-        if (node->Data == key) {
+        if (node->data == key) {
             return true;
         }
         node = node->Next;
@@ -108,7 +108,7 @@ void HashTable<T>::growTable() {
         HashTableNode<T> *node = table[i];
         while (node != nullptr) {
             HashTableNode<T> *nextNode = node->Next;
-            int newHash = Hash(node->Data, newTable.size());
+            int newHash = Hash(node->data, newTable.size());
             node->Next = newTable[newHash];
             newTable[newHash] = node;
             node = nextNode;
@@ -122,7 +122,7 @@ bool HashTable<T>::Delete(const T &key) {
     int hash = Hash(key, table.size());
     HashTableNode<T> *prevNode = nullptr;
     HashTableNode<T> *node = table[hash];
-    while (node != nullptr && node->Data != key) {
+    while (node != nullptr && node->data != key) {
         prevNode = node;
         node = node->Next;
     }

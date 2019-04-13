@@ -10,10 +10,9 @@ using std::string;
 using std::cin;
 using std::cout;
 
-const int DefaultHashTableSize = 320000;
+const int DefaultHashTableSize = 2;
 //const int MaxAlpha = 3;
-//const int GrowFactor = 2;
-
+const int GrowFactor = 2;
 
 
 std::uint32_t hash1(const string &key) {
@@ -76,23 +75,32 @@ HashTable<T>::HashTable() : keysCount(0) {
 }
 
 template<class T>
+void HashTable<T>::growTable() {
+    vector<HashTableNode<T>> tableCopy = table;
+    vector<HashTableNode<T>> newTable(table.size() * GrowFactor);
+    table = newTable;
+    for (int i = 0; i < (int) tableCopy.size(); i++) {
+        Add(tableCopy[i].data);
+    }
+}
+
+template<class T>
 bool HashTable<T>::Add(const T &key) {
     std::uint64_t x = hash1(key);
     std::uint64_t y = hash2(key);
-
     if (Has(key)) {
         return false;
     }
-
     for (int i = 0; i < (int) table.size(); i++) {
-        x = x +  i * y;
+        x = x + i * y;
         int index = x % table.size();
         if (table[index].status != HashTableNode<T>::Status::INSERTED) {
             table[index] = HashTableNode<T>(key);
             return true;
         }
     }
-    return false;
+    growTable();
+    return Add(key);
 }
 
 template<class T>
@@ -135,6 +143,7 @@ bool HashTable<T>::has(std::uint64_t h1, std::uint64_t h2, const T &key) const {
     return false;
 }
 
+
 template<class T>
 void HashTable<T>::displayHash() {
     for (int i = 0; i < (int) table.size(); i++) {
@@ -149,7 +158,7 @@ int main() {
     HashTable<string> table;
     char command = 0;
     string key;
-
+//
 //    std::ifstream myfile{"/home/anita/Desktop/algorithms/module_2/test.txt"};
 //
 //    while (myfile >> command >> key) {
