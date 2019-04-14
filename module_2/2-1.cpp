@@ -15,11 +15,11 @@ using std::cout;
 template<class T>
 struct Node {
     T value;
-    struct Node *left;
-    struct Node *right;
+    Node *left;
+    Node *right;
 
     Node() : value(T()), left(nullptr), right(nullptr) {}
-
+    Node(const T &data) : value(data), left(nullptr), right(nullptr) {}
     Node(const T &data, Node<T> *left, Node<T> *right) : value(data), left(left), right(right) {}
 };
 
@@ -28,40 +28,55 @@ class BinaryTree {
 public:
     BinaryTree();
 
+    ~BinaryTree();
 
     void Insert(const T &key);
 
-    // void destroyTree();
+    void inOrder();
 
 private:
-    //void destroyTree(Node<T> *leaf);
+    void destroy_tree(Node<T> *node);
 
-    void insert(const T &key, Node<T> *root);
+    void insert(const T &key, Node<T> *node);
+
+    void in_order(Node<T>* node);
 
     Node<T> *root;
 
 };
 
 template<class T>
-void BinaryTree<T>::insert(const T &key, Node<T> *sheet) {
-    if (key < sheet->value) {
-        if (sheet->left != nullptr) {
-            insert(key, sheet->left);
+void BinaryTree<T>::in_order(Node<T> *node) {
+    if (!node)
+        return;
+
+    in_order(node->left);
+    cout << node->value << " ";
+    in_order(node->right);
+
+}
+
+template<class T>
+void BinaryTree<T>::inOrder() {
+    in_order(root);
+}
+
+template<class T>
+void BinaryTree<T>::insert(const T &key, Node<T> *node) {
+    if (key < node->value) {
+        if (node->left != nullptr) {
+            insert(key, node->left);
         } else {
-            sheet->left = new Node<T>;
-            sheet->left->value = key;
-            sheet->left->left = nullptr;
-            sheet->left->right = nullptr;
+            node->left = new Node<T>(key);
+        }
+    } else if (key > node->value){
+        if (node->right != nullptr) {
+            insert(key, node->right);
+        } else {
+            node->right = new Node<T>(key);
         }
     } else {
-        if (sheet->right != nullptr) {
-            insert(key, sheet->left);
-        } else {
-            sheet->left = new Node<T>;
-            sheet->left->value = key;
-            sheet->left->left = nullptr;
-            sheet->left->right = nullptr;
-        }
+        return;
     }
 }
 
@@ -80,15 +95,31 @@ void BinaryTree<T>::Insert(const T &key) {
 template<class T>
 BinaryTree<T>::BinaryTree() : root(nullptr) {}
 
+template<class T>
+BinaryTree<T>::~BinaryTree() {
+    destroy_tree(root);
+}
+
+template<class T>
+void BinaryTree<T>::destroy_tree(Node<T> *node) {
+    if (node != nullptr){
+        destroy_tree(node->left);
+        destroy_tree(node->right);
+        delete(node);
+    }
+}
+
 
 int main() {
     int key = 0;
     BinaryTree<int> tree;
-    std::ifstream myfile{"/home/anita/Desktop/algorithms/module_2/test2.txt"};
-    while (myfile >> key) {
+    //std::ifstream myfile{"/home/anita/Desktop/algorithms/module_2/test2.txt"};
+    //while (myfile >> key) {
+    while (cin >> key) {
         tree.Insert(key);
-        cout << key << "\n";
+        //cout << key << "\n";
     }
+    tree.inOrder();
     return 0;
 }
 
