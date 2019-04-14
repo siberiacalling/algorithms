@@ -12,6 +12,7 @@
 #include<iostream>
 #include <fstream>
 #include <limits>
+#include <assert.h>
 
 using std::vector;
 using std::string;
@@ -175,8 +176,8 @@ int main() {
     HashTable<string> table;
     char command = 0;
     string key;
-
-    while (cin >> command >> key) {
+    std::ifstream my_file{"/home/anita/Desktop/algorithms/module_2/test2.txt"};
+    while (my_file >> command >> key) {
         switch (command) {
             case '+':
                 cout << (table.Add(key) ? "OK" : "FAIL") << "\n";
