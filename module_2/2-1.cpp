@@ -1,6 +1,6 @@
 /*
  * Смирнова Анита АПО-12
- * Contest ID
+ * Contest ID 20059843
  * Дано число N < 106 и последовательность целых чисел из [-231..231] длиной N.
  * Требуется построить бинарное дерево, заданное наивным порядком вставки.
  * Выведите элементы в порядке in-order (слева направо).
@@ -9,6 +9,7 @@
 #include<iostream>
 #include <fstream>
 #include <queue>
+#include <stack>
 
 using std::cin;
 using std::cout;
@@ -21,9 +22,7 @@ struct Node {
 
     Node() : value(T()), left(nullptr), right(nullptr) {}
 
-    Node(const T &data) : value(data), left(nullptr), right(nullptr) {}
-
-    //Node(const T &data, Node<T> *left, Node<T> *right) : value(data), left(left), right(right) {}
+    explicit Node(const T &data) : value(data), left(nullptr), right(nullptr) {}
 };
 
 template<class T>
@@ -38,30 +37,27 @@ public:
     void inOrder();
 
 private:
-    void round_tree(Node<T> *root);
-
     void destroy_tree();
-
-    void in_order(Node<T> *node);
 
     Node<T> *root;
 
 };
 
 template<class T>
-void BinaryTree<T>::in_order(Node<T> *node) {
-    if (!node)
-        return;
-
-    in_order(node->left);
-    cout << node->value << " ";
-    in_order(node->right);
-
-}
-
-template<class T>
 void BinaryTree<T>::inOrder() {
-    in_order(root);
+    std::stack<Node<T> *> s;
+    Node<T> *current_node = root;
+    while (current_node != nullptr || !s.empty()) {
+        while (current_node != nullptr) {
+            s.push(current_node);
+            current_node = current_node->left;
+        }
+        current_node = s.top();
+        s.pop();
+
+        cout << current_node->value << " ";
+        current_node = current_node->right;
+    }
 }
 
 template<class T>
@@ -113,30 +109,11 @@ void BinaryTree<T>::destroy_tree() {
     }
 }
 
-template<class T>
-void BinaryTree<T>::round_tree(Node<T> *root) {
-    if (root == nullptr) {
-        return;
-    }
-    std::deque<Node<T> *> q;
-    q.put(root);
-    while (!q.empty()) {
-        Node<T> *node = q.front();
-        //visit(node);
-        if (node->Left != nullptr)
-            q.push(node->Left);
-        if (node->Right != nullptr)
-            q.push(node->Right);
-    }
-}
-
 int main() {
     int key = 0;
     BinaryTree<int> tree;
-    // std::ifstream myfile{"/home/anita/Desktop/algorithms/module_2/test2.txt"};
     while (cin >> key) {
         tree.Insert(key);
-        //cout << key << "\n";
     }
     tree.inOrder();
     return 0;
