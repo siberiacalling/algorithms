@@ -8,6 +8,7 @@
  */
 #include<iostream>
 #include <fstream>
+#include <queue>
 
 using std::cin;
 using std::cout;
@@ -19,7 +20,9 @@ struct Node {
     Node *right;
 
     Node() : value(T()), left(nullptr), right(nullptr) {}
+
     Node(const T &data) : value(data), left(nullptr), right(nullptr) {}
+
     Node(const T &data, Node<T> *left, Node<T> *right) : value(data), left(left), right(right) {}
 };
 
@@ -35,11 +38,13 @@ public:
     void inOrder();
 
 private:
-    void destroy_tree(Node<T> *node);
+    void round_tree(Node<T> *root);
+
+    void destroy_tree();
 
     void insert(const T &key, Node<T> *node);
 
-    void in_order(Node<T>* node);
+    void in_order(Node<T> *node);
 
     Node<T> *root;
 
@@ -69,7 +74,7 @@ void BinaryTree<T>::insert(const T &key, Node<T> *node) {
         } else {
             node->left = new Node<T>(key);
         }
-    } else if (key > node->value){
+    } else if (key > node->value) {
         if (node->right != nullptr) {
             insert(key, node->right);
         } else {
@@ -97,29 +102,52 @@ BinaryTree<T>::BinaryTree() : root(nullptr) {}
 
 template<class T>
 BinaryTree<T>::~BinaryTree() {
-    destroy_tree(root);
+    destroy_tree();
 }
 
 template<class T>
-void BinaryTree<T>::destroy_tree(Node<T> *node) {
-    if (node != nullptr){
-        destroy_tree(node->left);
-        destroy_tree(node->right);
+void BinaryTree<T>::destroy_tree() {
+    if (root == nullptr) {
+        return;
+    }
+    std::deque<Node<T> *> q;
+    q.push_back(root);
+    while (!q.empty()) {
+        Node<T> *node = q.front();
+        if (node->left != nullptr)
+            q.push_back(node->left);
+        if (node->right != nullptr)
+            q.push_back(node->right);
+        q.pop_front();
         delete(node);
     }
 }
 
+template<class T>
+void BinaryTree<T>::round_tree(Node<T> *root) {
+    if (root == nullptr) {
+        return;
+    }
+    std::deque<Node<T> *> q;
+    q.put(root);
+    while (!q.empty()) {
+        Node<T> *node = q.front();
+        //visit(node);
+        if (node->Left != nullptr)
+            q.push(node->Left);
+        if (node->Right != nullptr)
+            q.push(node->Right);
+    }
+}
 
 int main() {
     int key = 0;
     BinaryTree<int> tree;
-    //std::ifstream myfile{"/home/anita/Desktop/algorithms/module_2/test2.txt"};
-    //while (myfile >> key) {
-    while (cin >> key) {
+    std::ifstream myfile{"/home/anita/Desktop/algorithms/module_2/test2.txt"};
+    while (myfile >> key) {
         tree.Insert(key);
         //cout << key << "\n";
     }
     tree.inOrder();
     return 0;
 }
-
