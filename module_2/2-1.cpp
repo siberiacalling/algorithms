@@ -1,6 +1,6 @@
 /*
  * Смирнова Анита АПО-12
- * Contest ID 20059843
+ * Contest ID 20238842
  * Дано число N < 106 и последовательность целых чисел из [-231..231] длиной N.
  * Требуется построить бинарное дерево, заданное наивным порядком вставки.
  * Выведите элементы в порядке in-order (слева направо).
@@ -10,19 +10,20 @@
 #include <fstream>
 #include <queue>
 #include <stack>
+#include <functional>
 
 using std::cin;
 using std::cout;
 
 template<class T>
-struct Node {
+struct NodeBST {
     T value;
-    Node *left;
-    Node *right;
+    NodeBST *left;
+    NodeBST *right;
 
-    Node() : value(T()), left(nullptr), right(nullptr) {}
+    NodeBST() : value(T()), left(nullptr), right(nullptr) {}
 
-    explicit Node(const T &data) : value(data), left(nullptr), right(nullptr) {}
+    explicit NodeBST(const T &data) : value(data), left(nullptr), right(nullptr) {}
 };
 
 template<class T>
@@ -34,19 +35,19 @@ public:
 
     void Insert(const T &key);
 
-    void inOrder();
+    void inOrder(std::function<void(T)> callback);
 
 private:
     void destroy_tree();
 
-    Node<T> *root;
+    NodeBST<T> *root;
 
 };
 
 template<class T>
-void BinaryTree<T>::inOrder() {
-    std::stack<Node<T> *> s;
-    Node<T> *current_node = root;
+void BinaryTree<T>::inOrder(std::function<void(T)> callback) {
+    std::stack<NodeBST<T> *> s;
+    NodeBST<T> *current_node = root;
     while (current_node != nullptr || !s.empty()) {
         while (current_node != nullptr) {
             s.push(current_node);
@@ -55,15 +56,15 @@ void BinaryTree<T>::inOrder() {
         current_node = s.top();
         s.pop();
 
-        cout << current_node->value << " ";
+        callback(current_node->value);
         current_node = current_node->right;
     }
 }
 
 template<class T>
 void BinaryTree<T>::Insert(const T &key) {
-    Node<T> *current_root = root;
-    Node<T> *node_to_insert = nullptr;
+    NodeBST<T> *current_root = root;
+    NodeBST<T> *node_to_insert = nullptr;
 
     while (current_root != nullptr) {
         node_to_insert = current_root;
@@ -73,11 +74,11 @@ void BinaryTree<T>::Insert(const T &key) {
             current_root = current_root->right;
     }
     if (node_to_insert == nullptr) {
-        root = new Node<T>(key);
+        root = new NodeBST<T>(key);
     } else if (key < node_to_insert->value) {
-        node_to_insert->left = new Node<T>(key);
+        node_to_insert->left = new NodeBST<T>(key);
     } else if (key > node_to_insert->value) {
-        node_to_insert->right = new Node<T>(key);
+        node_to_insert->right = new NodeBST<T>(key);
     } else {
         return;
     }
@@ -96,10 +97,10 @@ void BinaryTree<T>::destroy_tree() {
     if (root == nullptr) {
         return;
     }
-    std::deque<Node<T> *> q;
+    std::deque<NodeBST<T> *> q;
     q.push_back(root);
     while (!q.empty()) {
-        Node<T> *node = q.front();
+        NodeBST<T> *node = q.front();
         if (node->left != nullptr)
             q.push_back(node->left);
         if (node->right != nullptr)
@@ -115,6 +116,8 @@ int main() {
     while (cin >> key) {
         tree.Insert(key);
     }
-    tree.inOrder();
+    tree.inOrder([](int value) {
+        cout << value << " ";
+    });
     return 0;
 }
