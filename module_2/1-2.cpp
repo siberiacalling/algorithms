@@ -95,9 +95,34 @@ void HashTable<T>::growTable() {
 }
 
 template<class T>
+bool HashTable<T>::has(std::uint64_t h1, std::uint64_t h2, const T &key) const {
+    for (int i = 0; i < (int) table.size(); i++) {
+        h1 = h1 + i * h2;
+        int index = h1 % table.size();
+        if (table[index].status == HashTableNode<T>::Status::INSERTED && table[index].data == key) {
+            return true;
+        }
+        if (table[index].status == HashTableNode<T>::Status::EMPTY) {
+            return false;
+        }
+    }
+    return false;
+}
+
+template<class T>
+bool HashTable<T>::Has(const T &key) const {
+    std::uint64_t h1 = hash1(key);
+    std::uint64_t h2 = hash2(key);
+    return has(h1, h2, key);
+}
+
+template<class T>
 bool HashTable<T>::Add(const T &key) {
-    std::uint64_t x = hash1(key);
-    std::uint64_t y = hash2(key);
+    std::uint64_t h1 = hash1(key);
+    std::uint64_t h2 = table.size() + 1;
+    while (h2 % table.size() != 0) {
+        h2 = hash2(key);
+    }
 
     if (Has(key)) {
         return false;
@@ -108,18 +133,22 @@ bool HashTable<T>::Add(const T &key) {
     }
 
     for (int i = 0; i < (int) table.size(); i++) {
-        x = x + i * y;
-        int index = x % table.size();
+        h1 = h1 + i * h2;
+        int index = h1 % table.size();
+
+        // key already exist
+        if (table[index].status == HashTableNode<T>::Status::INSERTED && table[index].data == key) {
+            return false;
+        }
+        // table[index] empty or deleted
         if (table[index].status != HashTableNode<T>::Status::INSERTED) {
             table[index] = HashTableNode<T>(key);
             keysCount++;
-
             return true;
         }
     }
-    growTable();
-    return Add(key);
 }
+
 
 template<class T>
 bool HashTable<T>::Delete(const T &key) {
@@ -140,27 +169,6 @@ bool HashTable<T>::Delete(const T &key) {
     return false;
 }
 
-template<class T>
-bool HashTable<T>::Has(const T &key) const {
-    std::uint64_t h1 = hash1(key);
-    std::uint64_t h2 = hash2(key);
-    return has(h1, h2, key);
-}
-
-template<class T>
-bool HashTable<T>::has(std::uint64_t h1, std::uint64_t h2, const T &key) const {
-    for (int i = 0; i < (int) table.size(); i++) {
-        h1 = h1 + i * h2;
-        int index = h1 % table.size();
-        if (table[index].status == HashTableNode<T>::Status::INSERTED && table[index].data == key) {
-            return true;
-        }
-        if (table[index].status == HashTableNode<T>::Status::EMPTY) {
-            return false;
-        }
-    }
-    return false;
-}
 
 template<class T>
 void HashTable<T>::displayHash() {
@@ -176,8 +184,7 @@ int main() {
     HashTable<string> table;
     char command = 0;
     string key;
-    std::ifstream my_file{"/home/anita/Desktop/algorithms/module_2/test2.txt"};
-    while (my_file >> command >> key) {
+    while (cin >> command >> key) {
         switch (command) {
             case '+':
                 cout << (table.Add(key) ? "OK" : "FAIL") << "\n";

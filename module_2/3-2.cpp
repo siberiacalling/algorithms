@@ -132,7 +132,7 @@ void Treap<T>::insert(NodeTreap<T> *&currentNode, T key, int priority) {
 }
 
 template<class T>
-int Treap<T>::width() const{
+int Treap<T>::width() const {
     return maxWidthTreap(root);
 }
 
@@ -195,10 +195,9 @@ BinaryTree<T>::~BinaryTree() {
 }
 
 template<class T>
-int BinaryTree<T>::width() const{
+int BinaryTree<T>::width() const {
     return maxWidthTreap(root);
 }
-
 
 int main() {
     int key = 0;
