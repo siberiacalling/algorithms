@@ -1,22 +1,20 @@
 #include "CListGraph.h"
 
 
-CListGraph::CListGraph(int verticesAmount_) : IGraph(verticesAmount_), adjacencyMatrix(verticesAmount_, vector<int>(verticesAmount_)) {
+CListGraph::CListGraph(int verticesAmount_) : IGraph(verticesAmount_), lists(verticesAmount_) {
 }
 
-CListGraph::~CListGraph() {
-
-}
+CListGraph::~CListGraph() = default;
 
 CListGraph::CListGraph(const IGraph &graph) : IGraph(graph.verticesAmount),
-                                              adjacencyMatrix(graph.verticesAmount, vector<int>(graph.verticesAmount)) {
-   // graph.MainDFS(CListGraph::AddEdge, this);
+                                              lists(graph.verticesAmount, vector<int>(graph.verticesAmount)) {
+    // graph.MainDFS(CListGraph::AddEdge, this);
 }
 
 void CListGraph::dfs(int i, const std::function<void(int, int)> &callback, vector<int> &visited) const {
     visited[i] = 1;
     vector<int> nextVertices = GetNextVertices(i);
-    for (const auto& verticeIndex :nextVertices) {
+    for (const auto &verticeIndex :nextVertices) {
         callback(i, verticeIndex);
         if (!visited[verticeIndex]) {
             dfs(verticeIndex, callback, visited);
@@ -33,7 +31,7 @@ void CListGraph::MainDFS(const std::function<void(int, int)> &callback) const {
 }
 
 void CListGraph::AddEdge(int from, int to) {
-    adjacencyMatrix[from][to] = 1;
+    lists[from].push_back(to);
 }
 
 int CListGraph::VerticesCount() const {
@@ -42,34 +40,29 @@ int CListGraph::VerticesCount() const {
 
 
 vector<int> CListGraph::GetNextVertices(int vertex) const {
-    vector<int> result;
-    for (int j = 0; j < verticesAmount; j++) {
-        if (adjacencyMatrix[vertex][j] == 1) {
-            result.push_back(j);
-        }
-    }
-    return result;
+    return lists[vertex];
 }
 
 vector<int> CListGraph::GetPrevVertices(int vertex) const {
     vector<int> result;
-    int j = vertex;
-    cout << endl;
     for (int i = 0; i < verticesAmount; i++) {
-        cout << adjacencyMatrix[i][j];
-        if (adjacencyMatrix[i][j] == 1) {
-            result.push_back(i);
+        for (int j = 0; j < (int) lists[i].size(); j++) {
+            if (lists[i][j] == vertex) {
+                result.push_back(i);
+                // ???
+            } else if (lists[i][j] > vertex) {
+                break;
+            }
         }
     }
-    cout << endl;
     return result;
 }
 
 
 void CListGraph::PrintMatrix() {
     for (int i = 0; i < verticesAmount; i++) {
-        for (int j = 0; j < verticesAmount; j++) {
-            cout << adjacencyMatrix[i][j];
+        for (int j : GetNextVertices(i)) {
+            cout << j;
         }
         cout << endl;
     }
@@ -77,15 +70,19 @@ void CListGraph::PrintMatrix() {
 
 
 int main() {
-    CListGraph a(4);
+    CListGraph a(5);
     a.AddEdge(1, 0);
     a.AddEdge(1, 3);
     a.AddEdge(2, 1);
     a.AddEdge(2, 3);
     a.AddEdge(3, 2);
-    //a.AddEdge(3, 4);
+    a.AddEdge(3, 4);
 
-    a.PrintMatrix();
+//    a.PrintMatrix();
+//    vector<int> result = a.GetPrevVertices(2);
+//    for (int i : result) {
+//        cout << i << " ";
+//    }
     a.MainDFS([](int value, int value2) {
         cout << "из " << value << "  в " << value2 << endl;
     });

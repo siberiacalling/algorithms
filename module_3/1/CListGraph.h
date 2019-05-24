@@ -5,12 +5,12 @@
 
 class CListGraph : public IGraph {
 public:
-    CListGraph(int verticesAmount_);
+    explicit CListGraph(int verticesAmount_);
 
     // Конструктор копирования
-    CListGraph(const IGraph &graph);
+    explicit CListGraph(const IGraph &graph);
 
-    ~CListGraph();
+    ~CListGraph() override;
 
     // Добавление ребра от from к to.
     void AddEdge(int from, int to) override;
@@ -24,7 +24,7 @@ public:
 
 private:
     void dfs(int i, const std::function<void(int, int)>& callback, vector<int>& visited) const override;
-    vector<vector<int>> adjacencyMatrix;
+    vector<vector<int>> lists;
 
 };
 
