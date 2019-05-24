@@ -58,13 +58,6 @@ void CArcGraph::MainDFS(const std::function<void(int, int)> &callback) const {
 }
 
 
-
-
-
-void CArcGraph::PrintMatrix() {
-
-}
-
 int main() {
     CArcGraph a(5);
     a.AddEdge(1, 0);
