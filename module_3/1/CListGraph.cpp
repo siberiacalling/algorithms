@@ -7,7 +7,7 @@ CListGraph::CListGraph(int verticesAmount_) : IGraph(verticesAmount_), lists(ver
 CListGraph::~CListGraph() = default;
 
 CListGraph::CListGraph(const IGraph &graph) : IGraph(graph.verticesAmount),
-                                              lists(graph.verticesAmount, vector<int>(graph.verticesAmount)) {
+                                              lists(graph.verticesAmount) {
     // graph.MainDFS(CListGraph::AddEdge, this);
 }
 
@@ -49,9 +49,6 @@ vector<int> CListGraph::GetPrevVertices(int vertex) const {
         for (int j = 0; j < (int) lists[i].size(); j++) {
             if (lists[i][j] == vertex) {
                 result.push_back(i);
-                // ???
-            } else if (lists[i][j] > vertex) {
-                break;
             }
         }
     }
