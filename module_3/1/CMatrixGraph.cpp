@@ -10,7 +10,7 @@
 
  CMatrixGraph:: CMatrixGraph(const IGraph &graph) : IGraph(graph.verticesAmount),
                                               adjacencyMatrix(graph.verticesAmount, vector<int>(graph.verticesAmount)) {
-    // graph.MainDFS( CMatrixGraph::AddEdge, this);
+    graph.MainDFS( [this](int a, int b){this->AddEdge(a, b);});
 }
 
 void  CMatrixGraph::dfs(int i, const std::function<void(int, int)> &callback, vector<int> &visited) const {

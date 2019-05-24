@@ -8,7 +8,7 @@ CListGraph::~CListGraph() = default;
 
 CListGraph::CListGraph(const IGraph &graph) : IGraph(graph.verticesAmount),
                                               lists(graph.verticesAmount) {
-    // graph.MainDFS(CListGraph::AddEdge, this);
+    graph.MainDFS([this](int a, int b) { this->AddEdge(a, b); });
 }
 
 void CListGraph::dfs(int i, const std::function<void(int, int)> &callback, vector<int> &visited) const {

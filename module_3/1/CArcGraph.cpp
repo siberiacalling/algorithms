@@ -4,9 +4,9 @@ CArcGraph::CArcGraph(int verticesAmount_) : IGraph(verticesAmount_) {
 
 }
 
-CArcGraph::CArcGraph(const IGraph &graph): IGraph(graph.verticesAmount),
-                                               vectorPairs(graph.verticesAmount) {
-//
+CArcGraph::CArcGraph(const IGraph &graph) : IGraph(graph.verticesAmount),
+                                            vectorPairs(graph.verticesAmount) {
+    graph.MainDFS([this](int a, int b) { this->AddEdge(a, b); });
 }
 
 CArcGraph::~CArcGraph() = default;

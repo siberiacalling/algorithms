@@ -6,7 +6,7 @@ CSetGraph::CSetGraph(int verticesAmount_) : IGraph(verticesAmount_), vectorSets(
 
 CSetGraph::CSetGraph(const IGraph &graph) : IGraph(graph.verticesAmount),
                                             vectorSets(graph.verticesAmount) {
-
+    graph.MainDFS( [this](int a, int b){this->AddEdge(a, b);});
 }
 
 CSetGraph::~CSetGraph() = default;
